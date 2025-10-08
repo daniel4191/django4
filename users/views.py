@@ -49,9 +49,9 @@ def signup_view(request):
             return redirect("/posts/feeds/")
         else:
             context = {"form":form}
-            return render(request, "users/signup.html", context)
                 
     else:
         form = SignupForm()
-        context = {"form": form}
-        return render(request, "users/signup.html", context)
+        
+    context = {"form": form}
+    return render(request, "users/signup.html", context)
