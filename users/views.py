@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 # 주어진 값에 해당하는 자가 있는지 확인
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import LoginForm
+from .models import User
+from .forms import LoginForm, SignupForm
 
 # Create your views here.
 def login_view(request):
@@ -37,3 +38,20 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("/users/login/")
+
+def signup_view(request):
+    if request.method == "POST":
+        form = SignupForm(data = request.POST, files = request.FILES)
+        
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("/posts/feeds/")
+        else:
+            context = {"form":form}
+            return render(request, "users/signup.html", context)
+                
+    else:
+        form = SignupForm()
+        context = {"form": form}
+        return render(request, "users/signup.html", context)
