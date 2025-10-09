@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <nav>
-    <h1>Noabo</h1>
+    <h1><a href="/posts/feeds/">Noabo</a></h1>
+    <a href="/users/logout/">로그아웃</a>
 </nav>
 <div id="post-add">
     <h1>post add</h1>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        <div>
+            <label for="id_images">이미지</label>
+            <input type="file" id="id_images" name="images" multiple>
+        </div>
         {{form.as_p}}
         <button type="submit">게시</button>
     </form>
