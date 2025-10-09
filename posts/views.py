@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
-from .models import Post
-from .forms import CommentForm
+from .models import Post, Comment
+from .forms import CommentForm, PostForm
 
 # Create your views here.
 def feeds(request):
@@ -31,8 +32,19 @@ def comment_add(request):
         print(comment.content)
         print(comment.user)
         
-        return redirect("/posts/feeds/")
-    else:
-        print(form.errors)
-        print(request.POST)
+        return HttpResponseRedirect(f"/posts/feeds/#posts-{comment.post.id}")
     
+@require_POST
+def comment_delete(request, comment_id):
+    if request.method == "POST":
+        comment = Comment.objects.get(id = comment_id)
+        if comment.user == request.user:
+            comment.delete()
+            return HttpResponseRedirect(f"/posts/feeds/#post-{comment.post.id}")
+        else:
+            return HttpResponseForbidden("이 댓글을 삭제할 권한이 없습니다.")
+        
+def post_add(request):
+    form = PostForm()
+    context = {"form": form}
+    return render(request, "posts/post_add.html", context)

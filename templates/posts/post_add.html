@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav>
+    <h1>Noabo</h1>
+</nav>
+<div id="post-add">
+    <h1>post add</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">게시</button>
+    </form>
+</div>
+{% endblock content %}
