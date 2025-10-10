@@ -2,10 +2,10 @@
 {% block content %}
 <nav>
     <h1>
-        <a href="/posts/feeds/">Noabo</a>
+        <a href="{% url 'posts:feeds' %}">Noabo</a>
     </h1>
-    <a href="/posts/post_add/">포스트추가</a>
-    <a href="/users/logout/">로그아웃</a>
+    <a href="{% url 'posts:post_add' %}">포스트추가</a>
+    <a href="{% url 'users:logout' %}">로그아웃</a>
 </nav>
 <div id="feeds" class="post-container">
     {% for post in posts %}
@@ -50,7 +50,7 @@
 
                         <!--댓글 삭제-->
                         {% if user == comment.user %}
-                            <form action="/posts/comment_delete/{{comment.id}}/" method="post">
+                            <form action="{% url 'posts:comment_delete' comment_id=comment.id %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit">삭제</button>
                             </form>
@@ -62,7 +62,7 @@
 
             <small>{{post.created}}</small>
             <div class="post-comment-create">
-                <form action="/posts/comment_add/" method="post">
+                <form action="{% url 'posts:comment_add' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="post" value="{{post.id}}">
                     {{comment_form.content}}

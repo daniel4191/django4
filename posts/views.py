@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.urls import reverse
 
 from .models import Post, Comment, PostImage
 from .forms import CommentForm, PostForm
@@ -9,7 +10,7 @@ from .forms import CommentForm, PostForm
 def feeds(request):
     # 요청에 포함된 사용자가 로그인 하지 않은 경우
     if not request.user.is_authenticated:
-        return redirect("/users/login/")
+        return redirect("users:login")
     
     # 모든 글 목록을 템플릿으로 전달
     posts = Post.objects.all()
@@ -32,7 +33,8 @@ def comment_add(request):
         print(comment.content)
         print(comment.user)
         
-        return HttpResponseRedirect(f"/posts/feeds/#posts-{comment.post.id}")
+        url = reverse("posts:feeds")+f"#post-{comment.post.id}"
+        return HttpResponseRedirect(url)
     
 @require_POST
 def comment_delete(request, comment_id):
@@ -40,7 +42,8 @@ def comment_delete(request, comment_id):
         comment = Comment.objects.get(id = comment_id)
         if comment.user == request.user:
             comment.delete()
-            return HttpResponseRedirect(f"/posts/feeds/#post-{comment.post.id}")
+            url = reverse("posts:feeds") + f"#post-{comment.post.id}"
+            return HttpResponseRedirect(url)
         else:
             return HttpResponseForbidden("이 댓글을 삭제할 권한이 없습니다.")
         
@@ -58,8 +61,8 @@ def post_add(request):
                     post = post,
                     photo = image_file
                 )
-                
-        url = f"/posts/feeds/#post-{post.id}"
+        
+        url = reverse("posts:feeds") + f"#post-{post.id}"
         return HttpResponseRedirect(url)
     
     else:
