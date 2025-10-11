@@ -3,7 +3,7 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 
-from .models import Post, Comment, PostImage
+from .models import Post, Comment, PostImage, HashTag
 from .forms import CommentForm, PostForm
 
 # Create your views here.
@@ -61,6 +61,15 @@ def post_add(request):
                     post = post,
                     photo = image_file
                 )
+            
+            # hashtag 라인
+            tag_string = request.POST.get("tags")
+            if tag_string:
+                tag_names = [tag_name.strip() for tag_name in tag_string.split(",")]
+                for tag_name in tag_names:
+                    tag, _ = HashTag.objects.get_or_create(name = tag_name)
+                    post.tags.add(tag)
+            
         
         url = reverse("posts:feeds") + f"#post-{post.id}"
         return HttpResponseRedirect(url)
@@ -69,3 +78,17 @@ def post_add(request):
         form = PostForm()
     context = {"form": form}
     return render(request, "posts/post_add.html", context)
+
+def tags(request, tag_name):
+    try:
+        tag = HashTag.objects.get(name = tag_name)
+    except HashTag.DoesNotExist:
+        posts = Post.objects.none()
+    else:
+        posts = Post.objects.filter(tags = tag)
+    
+    context = {
+        "posts": posts,
+        "tag_name": tag_name
+        }
+    return render(request, "posts/tags.html", context)

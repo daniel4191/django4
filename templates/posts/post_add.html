@@ -2,7 +2,7 @@
 {% block content %}
 <nav>
     <h1><a href="{% url 'posts:feeds' %}">Noabo</a></h1>
-    <a href="{% url users:logout %}">로그아웃</a>
+    <a href="{% url 'users:logout' %}">로그아웃</a>
 </nav>
 <div id="post-add">
     <h1>post add</h1>
@@ -13,6 +13,10 @@
             <input type="file" id="id_images" name="images" multiple>
         </div>
         {{form.as_p}}
+        <div>
+            <label for="id_tags">해시태그</label>
+            <input name="tags" type="text" id="id_tags" placeholder="구분은 (,)쉼표로 하기">
+        </div>
         <button type="submit">게시</button>
     </form>
 </div>
