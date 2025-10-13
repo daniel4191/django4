@@ -1,10 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-<nav>
-    <h1><a href="{% url 'posts:feeds' %}">Noabo</a></h1>
-    <a href="{% url 'posts:post_add' %}">포스트추가</a>
-    <a href="{% url 'users:logout' %}">로그아웃</a>
-</nav>
 <div id="tags">
     <header class="tags-header">
         <h2>#{{tag_name}}</h2>
@@ -14,10 +9,11 @@
         {% for post in posts %}
             {% if post.postimage_set.first and post.postimage_set.first.photo %}
                 <div class="post-grid">
-                    <img src="{{post.postimage_set.first.photo.url}}" alt="">
+                    <a href="{% url 'posts:post_detail' post_id=post.id %}">
+                        <img src="{{post.postimage_set.first.photo.url}}" alt="">    
+                    </a>
                 </div>
             {% endif %}
-            
             {%empty%}
                 <p>검색된 게시물이 없습니다.</p>
         {% endfor %}
