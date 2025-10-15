@@ -1,7 +1,15 @@
-{% extends 'base_nav.html' %}
+{% extends 'base_profile.html' %}
 
-{% block content %}
-<div id="profile">
-    <h1>Profile</h1>
-</div>
-{% endblock content %}
+{% block bottom_data %}
+    <div class="post-grid-container">
+        {% for post in user.post_set.all %}
+            {% if post.postimage_set.first and post.postimage_set.first.photo %}
+                <div class="post-grid">
+                    <a href="{% url 'posts:post_detail' post_id=post.id %}">
+                        <img src="{{post.postimage_set.first.photo.url}}" alt="">
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock bottom_data %}

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class Relationships(models.Model):
+class Relationship(models.Model):
     from_user = models.ForeignKey(
         "users.User",
         verbose_name="팔로우 요청한 유저",
@@ -40,7 +40,7 @@ class User(AbstractUser):
         verbose_name="팔로우 중인 유저들",
         related_name="followers",
         symmetrical=False,
-        through = "users.Relationships"
+        through = "users.Relationship"
     )
     
     def __str__(self):

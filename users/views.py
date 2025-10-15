@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-# 주어진 값에 해당하는 자가 있는지 확인
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from .models import User
 from .forms import LoginForm, SignupForm
@@ -62,3 +63,39 @@ def profile(request, user_id):
         "user":user
     }
     return render(request, "users/profile.html", context)
+
+def followers(request, user_id):
+    user = get_object_or_404(User, id = user_id)
+    relationships = user.follower_relationships.all()
+    context = {
+        "user": user,
+        "relationships": relationships
+    }
+    return render(request, "users/followers.html", context)
+
+def following(request, user_id):
+    user = get_object_or_404(User, id = user_id)
+    relationships = user.following_relationships.all()
+    context = {
+        "user":user,
+        "relationships":relationships
+    }
+    return render(request, "users/following.html", context)
+
+def follow(request, user_id):
+    # 로그인한 유저
+    
+    user = request.user
+    #팔로우 하려는 유저
+    
+    target_user = get_object_or_404(User, id=user_id)
+    #팔로우하려는 유저가 이미 자신의 팔로잉 목록에 있는 경우
+    
+    if target_user in user.following.all():
+        user.following.remove(target_user)
+    #팔로우 하려는 유저가 자신의 팔로우 목록에 없는 경우
+    else:
+        user.following.add(target_user)
+    #팔로우 토글 후 이동할 URL이 전달되엇다면 해당 주소로
+    url_next = request.GET.get("next") or reverse("users:profile" ,args=[user.id])
+    return HttpResponseRedirect(url_next)
