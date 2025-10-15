@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 # 주어진 값에 해당하는 자가 있는지 확인
 from django.contrib.auth import authenticate, login, logout
 
@@ -55,3 +55,10 @@ def signup_view(request):
         
     context = {"form": form}
     return render(request, "users/signup.html", context)
+
+def profile(request, user_id):
+    user = get_object_or_404(User, id = user_id)
+    context = {
+        "user":user
+    }
+    return render(request, "users/profile.html", context)
